@@ -144,7 +144,7 @@ func main() {
 	// Set up the watcher service.
 	var wsvc watcher.Service
 	{
-		wsvc, err = watcher.New(ctx, &config.Watcher)
+		wsvc, err = watcher.New(logger.WithName("watcher"), ctx, &config.Watcher)
 		if err != nil {
 			logger.Error(err, "Error setting up watchers.")
 			os.Exit(1)

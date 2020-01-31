@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"gocloud.dev/blob"
+	"github.com/go-logr/logr"
 )
 
 var ErrWatchTimeout = errors.New("watcher timed out")
@@ -73,7 +74,7 @@ type serviceImpl struct {
 
 var _ Service = (*serviceImpl)(nil)
 
-func New(ctx context.Context, c *Config) (*serviceImpl, error) {
+func New(logger logr.Logger, ctx context.Context, c *Config) (*serviceImpl, error) {
 	var watchers = map[string]Watcher{}
 
 	for _, item := range c.Minio {
@@ -86,7 +87,7 @@ func New(ctx context.Context, c *Config) (*serviceImpl, error) {
 	}
 
 	for _, item := range c.Filesystem {
-		w, err := NewFilesystemWatcher(ctx, item)
+		w, err := NewFilesystemWatcher(logger, ctx, item)
 		if err != nil {
 			return nil, err
 		}

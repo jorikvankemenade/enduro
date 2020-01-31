@@ -12,23 +12,25 @@ import (
 	"github.com/artefactual-labs/enduro/internal/filenotify"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/go-logr/logr"
 	"gocloud.dev/blob"
 	"gocloud.dev/blob/fileblob"
 )
 
 // filesystemWatcher implements a Watcher for watching paths in a local filesystem.
 type filesystemWatcher struct {
-	ctx   context.Context
-	fsw   filenotify.FileWatcher
-	ch    chan *fsnotify.Event
-	path  string
-	regex *regexp.Regexp
+	ctx    context.Context
+	fsw    filenotify.FileWatcher
+	ch     chan *fsnotify.Event
+	path   string
+	regex  *regexp.Regexp
+	logger logr.Logger
 	*commonWatcherImpl
 }
 
 var _ Watcher = (*filesystemWatcher)(nil)
 
-func NewFilesystemWatcher(ctx context.Context, config *FilesystemConfig) (*filesystemWatcher, error) {
+func NewFilesystemWatcher(logger logr.Logger, ctx context.Context, config *FilesystemConfig) (*filesystemWatcher, error) {
 	stat, err := os.Stat(config.Path)
 	if err != nil {
 		return nil, fmt.Errorf("error looking up stat info: %w", err)
@@ -60,11 +62,12 @@ func NewFilesystemWatcher(ctx context.Context, config *FilesystemConfig) (*files
 	}
 
 	w := &filesystemWatcher{
-		ctx:   ctx,
-		fsw:   fsw,
-		ch:    make(chan *fsnotify.Event, 100),
-		path:  abspath,
-		regex: regex,
+		ctx:    ctx,
+		fsw:    fsw,
+		ch:     make(chan *fsnotify.Event, 100),
+		path:   abspath,
+		regex:  regex,
+		logger: logger,
 		commonWatcherImpl: &commonWatcherImpl{
 			name:             config.Name,
 			pipeline:         config.Pipeline,
@@ -95,6 +98,7 @@ func (w *filesystemWatcher) loop() {
 			if w.regex != nil && w.regex.MatchString(event.Name) {
 				continue
 			}
+			w.logger.Info("Create event for: " + event.Name)
 			w.ch <- &event
 		case _, ok := <-w.fsw.Errors():
 			if !ok {

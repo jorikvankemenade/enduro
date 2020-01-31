@@ -20,6 +20,9 @@ func NewDownloadActivity(m *manager.Manager) *DownloadActivity {
 }
 
 func (a *DownloadActivity) Execute(ctx context.Context, event *watcher.BlobEvent) (string, error) {
+	logger := a.manager.Logger
+	logger.Info("Downloading: " + event.String())
+
 	if event == nil {
 		return "", wferrors.NonRetryableError(errors.New("error reading parameters"))
 	}
