@@ -27,6 +27,7 @@ require (
 	github.com/google/wire v0.4.0 // indirect
 	github.com/gorilla/schema v1.1.0
 	github.com/jmoiron/sqlx v1.2.0
+	github.com/jorikvankemenade/watcher v1.0.8-0.20200214081459-71d1a430a083
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/nwaples/rardecode v1.0.0 // indirect
 	github.com/oklog/run v1.1.0
@@ -34,7 +35,6 @@ require (
 	github.com/pelletier/go-toml v1.6.0 // indirect
 	github.com/pierrec/lz4 v2.4.1+incompatible // indirect
 	github.com/prometheus/client_golang v1.4.1
-	github.com/radovskyb/watcher v1.0.7
 	github.com/samuel/go-thrift v0.0.0-20191111193933-5165175b40af // indirect
 	github.com/spf13/afero v1.2.2
 	github.com/spf13/cast v1.3.1 // indirect

@@ -5,7 +5,8 @@ package filenotify
 
 import (
 	"github.com/fsnotify/fsnotify"
-	"github.com/radovskyb/watcher"
+	"github.com/go-logr/logr"
+	"github.com/jorikvankemenade/watcher"
 )
 
 // FileWatcher is an interface for implementing file notification watchers
@@ -18,11 +19,11 @@ type FileWatcher interface {
 }
 
 // New tries to use an fs-event watcher, and falls back to the poller if there is an error
-func New() (FileWatcher, error) {
+func New(logger logr.Logger) (FileWatcher, error) {
 	if watcher, err := NewEventWatcher(); err == nil {
 		return watcher, nil
 	}
-	return NewPollingWatcher()
+	return NewPollingWatcher(logger)
 }
 
 // NewEventWatcher returns an fs-event based file watcher
@@ -37,9 +38,9 @@ func NewEventWatcher() (FileWatcher, error) {
 }
 
 // NewPollingWatcher returns a poll-based file watcher
-func NewPollingWatcher() (FileWatcher, error) {
+func NewPollingWatcher(logger logr.Logger) (FileWatcher, error) {
 	poller := &filePoller{
-		wr:     watcher.New(),
+		wr:     watcher.New(logger),
 		events: make(chan fsnotify.Event),
 		errors: make(chan error),
 	}

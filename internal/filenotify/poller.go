@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/radovskyb/watcher"
+	"github.com/jorikvankemenade/watcher"
 )
 
 // watchWaitTime is the time to wait between file poll loops

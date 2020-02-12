@@ -53,9 +53,9 @@ func NewFilesystemWatcher(logger logr.Logger, ctx context.Context, config *Files
 	// The inotify API isn't always available, fall back to polling.
 	var fsw filenotify.FileWatcher
 	if config.Inotify && runtime.GOOS != "windows" {
-		fsw, err = filenotify.New()
+		fsw, err = filenotify.New(logger)
 	} else {
-		fsw, err = filenotify.NewPollingWatcher()
+		fsw, err = filenotify.NewPollingWatcher(logger)
 	}
 	if err != nil {
 		return nil, fmt.Errorf("error creating filesystem watcher: %w", err)
